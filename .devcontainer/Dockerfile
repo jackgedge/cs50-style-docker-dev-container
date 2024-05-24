@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
-ENV TZ=Indian/Chagos
+RUN ln -snf /usr/share/zoneinfo/$(cat /etc/timezone) /etc/localtime && echo $(cat /etc/timezone) > /etc/timezone
 
 # Install Clang, Make, and other necessary tools for C development
 RUN apt-get update && apt-get install -y \
@@ -51,6 +51,13 @@ RUN wget https://github.com/PowerShell/PowerShell/releases/download/v7.4.2/power
 RUN mkdir -p /opt/powershell && \
     tar -xzf powershell.tar.gz -C /opt/powershell && \
     ln -s /opt/powershell/pwsh /usr/local/bin/pwsh
+
+# Install the CS50 C Library
+RUN apt-get update && apt-get install -y \
+    libcs50-10
+
+# Install the CS50 Python Library
+RUN python3 -m pip install cs50
 
 # Clean up downloaded tar.gz file
 RUN rm powershell.tar.gz
